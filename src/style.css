@@ -4,3 +4,8 @@
   padding: 2rem;
   text-align: center;
 }
+
+.checkboxTache
+{
+  text-decoration-line: line-through;
+}
