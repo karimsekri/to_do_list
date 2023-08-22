@@ -2,14 +2,20 @@ const app = document.querySelector('#app') as HTMLDivElement;
 const divListTaches = document.createElement("div") as HTMLDivElement;
 
 let mesLabelsStored = localStorage.getItem("labels");
-if (mesLabelsStored !== null) {
+let mesCheckboxStored = localStorage.getItem("checkboxes");
+
+if (mesLabelsStored !== null && mesCheckboxStored != null) {
   const mesLabels: string[] = JSON.parse(mesLabelsStored);
-  //console.log("mesLabels text", JSON.parse(mesLabels));
+  const mesCheckbox : boolean [] = JSON.parse(mesCheckboxStored);
+  
+ 
   for (let index = 0; index < mesLabels.length; index++) {
-    const element = mesLabels[index];
-    recreerHistorique(element);
+    const elementLabel = mesLabels[index];
+    const elementCheckbox = mesCheckbox[index];
+    recreerHistorique(elementLabel, elementCheckbox);
   }
 }
+
 
 const divAjoutTache = document.createElement("div") as HTMLDivElement;
 const inputTache = document.createElement("input") as HTMLInputElement;
@@ -41,10 +47,10 @@ app.appendChild(divListTaches);
 
 btnAjouterTache.addEventListener("click", () => {
   AjouterTache();  
-  
+  listerTaches();
 });
 
-listerTaches();
+
 
 
 function AjouterTache(){
@@ -67,6 +73,7 @@ function AjouterTache(){
 
   const checkboxTache = document.createElement("input") as HTMLInputElement;
   checkboxTache.classList.add("checkbox");
+  checkboxTache.setAttribute("type", "checkbox");
 
   checkboxTache.addEventListener("change", () => {
     if (checkboxTache.checked) {
@@ -77,7 +84,7 @@ function AjouterTache(){
       labelTache.classList.remove("checkboxTache");
     }
   });
-  checkboxTache.setAttribute("type", "checkbox");
+  
 
   divContainerTacheSaved.appendChild(checkboxTache);
   divContainerTacheSaved.appendChild(labelTache);
@@ -98,35 +105,36 @@ function listerTaches() {
   let tabChecked: boolean[] = []
   for (let index = 0; index < listTachesArray.length; index++) {
     const nomTache = listTachesArray[index].innerText;
-    const checked = listCheckboxArray[index].checked
-    //console.log("listTachesArray", listTachesArray);
-    
+    const muChecked = listCheckboxArray[index].checked
+        
     tabTaches.push(nomTache);
-    tabChecked.push(checked);
+    tabChecked.push(muChecked);
   }
 
-  
-  
   localStorage.setItem('labels', JSON.stringify(tabTaches));
   localStorage.setItem('checkboxes', JSON.stringify(tabChecked));
-  console.log(tabChecked);
-
+  
 }
 
 
-function recreerHistorique (element: string){
-  
- 
+function recreerHistorique (elementLabelText: string, elementCheckboxChgecked : boolean ){
+   
     const divContainerTacheSaved = document.createElement("div") as HTMLDivElement;
     divContainerTacheSaved.classList.add("tacheToSave");    
   
     const labelTache = document.createElement("label") as HTMLLabelElement;
     labelTache.classList.add("tacheValue");
-    labelTache.innerText = element;
+    labelTache.innerText = elementLabelText;
+
+    const checkboxTache = document.createElement("input") as HTMLInputElement;
+    checkboxTache.classList.add("checkbox");
+    checkboxTache.setAttribute("type", "checkbox");
+    checkboxTache.checked = elementCheckboxChgecked;
+   // checkboxTache.setAttribute("checked", elementCheckboxChgecked) ;
 
     
-
-    divContainerTacheSaved.appendChild(labelTache);    
+    divContainerTacheSaved.appendChild(checkboxTache);
+    divContainerTacheSaved.appendChild(labelTache);        
     divListTaches.appendChild(divContainerTacheSaved);
   
   
