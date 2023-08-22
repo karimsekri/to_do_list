@@ -1,3 +1,8 @@
+body{
+  background-color: aqua;
+}
+
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,6 +10,11 @@
   text-align: center;
 }
 
+.tacheToSave{
+  display: flex;
+  border : 1px solid blue;
+  
+}
 .checkboxTache
 {
   text-decoration-line: line-through;

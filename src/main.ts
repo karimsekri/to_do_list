@@ -1,24 +1,16 @@
-let mesLabels = localStorage.getItem("labels");
-if (mesLabels != null) {
-  console.log(JSON.parse(mesLabels));
-  mesLabels = JSON.parse(mesLabels);
+const app = document.querySelector('#app') as HTMLDivElement;
+const divListTaches = document.createElement("div") as HTMLDivElement;
+
+let mesLabelsStored = localStorage.getItem("labels");
+if (mesLabelsStored !== null) {
+  const mesLabels: string[] = JSON.parse(mesLabelsStored);
+  //console.log("mesLabels text", JSON.parse(mesLabels));
   for (let index = 0; index < mesLabels.length; index++) {
     const element = mesLabels[index];
-    console.log(element);
-    //AjouterTache(element);
-    
+    recreerHistorique(element);
   }
 }
-// for (let index = 0; index < mesLabels.length; index++) {
-//   if (mesLabels != null) {
-//     const element = mesLabels[index];
-//     console.log(element);
-//   }}
-  
-  
 
-
-const app = document.querySelector('#app') as HTMLDivElement;
 const divAjoutTache = document.createElement("div") as HTMLDivElement;
 const inputTache = document.createElement("input") as HTMLInputElement;
 inputTache.setAttribute("id", "input");
@@ -27,9 +19,8 @@ inputTache.value = "texte ici";
 
 const btnAjouterTache = document.createElement("button") as HTMLButtonElement;
 
-const divListTaches = document.createElement("div") as HTMLDivElement;
 
-const childTache : string [] = [];
+
 
 divAjoutTache.appendChild(inputTache);
 divAjoutTache.appendChild(btnAjouterTache);
@@ -49,10 +40,11 @@ app.appendChild(divListTaches);
 
 
 btnAjouterTache.addEventListener("click", () => {
-  AjouterTache();
+  AjouterTache();  
   
-listerTaches();
 });
+
+listerTaches();
 
 
 function AjouterTache(){
@@ -74,7 +66,7 @@ function AjouterTache(){
   });
 
   const checkboxTache = document.createElement("input") as HTMLInputElement;
-  checkboxTache.classList.add("checkboxTache");
+  checkboxTache.classList.add("checkbox");
 
   checkboxTache.addEventListener("change", () => {
     if (checkboxTache.checked) {
@@ -99,16 +91,43 @@ function AjouterTache(){
 function listerTaches() {
   const listDesTaches = document.querySelectorAll(".tacheValue"); 
   const listTachesArray = Array.from(listDesTaches) as HTMLLabelElement[];
+  const listDesCheckbox = document.querySelectorAll(".checkbox"); 
+  const listCheckboxArray = Array.from(listDesCheckbox) as HTMLInputElement[];
    
   let tabTaches: string[] = []
+  let tabChecked: boolean[] = []
   for (let index = 0; index < listTachesArray.length; index++) {
     const nomTache = listTachesArray[index].innerText;
+    const checked = listCheckboxArray[index].checked
+    //console.log("listTachesArray", listTachesArray);
     
-    tabTaches.push(nomTache)
+    tabTaches.push(nomTache);
+    tabChecked.push(checked);
   }
 
- // console.log(tabTaches);
+  
   
   localStorage.setItem('labels', JSON.stringify(tabTaches));
+  localStorage.setItem('checkboxes', JSON.stringify(tabChecked));
+  console.log(tabChecked);
 
+}
+
+
+function recreerHistorique (element: string){
+  
+ 
+    const divContainerTacheSaved = document.createElement("div") as HTMLDivElement;
+    divContainerTacheSaved.classList.add("tacheToSave");    
+  
+    const labelTache = document.createElement("label") as HTMLLabelElement;
+    labelTache.classList.add("tacheValue");
+    labelTache.innerText = element;
+
+    
+
+    divContainerTacheSaved.appendChild(labelTache);    
+    divListTaches.appendChild(divContainerTacheSaved);
+  
+  
 }
