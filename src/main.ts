@@ -1,6 +1,8 @@
 const app = document.querySelector('#app') as HTMLDivElement;
 const divListTaches = document.createElement("div") as HTMLDivElement;
 
+
+
 let mesLabelsStored = localStorage.getItem("labels");
 let mesCheckboxStored = localStorage.getItem("checkboxes");
 
@@ -8,7 +10,7 @@ if (mesLabelsStored !== null && mesCheckboxStored != null) {
   const mesLabels: string[] = JSON.parse(mesLabelsStored);
   const mesCheckbox : boolean [] = JSON.parse(mesCheckboxStored);
   
- 
+  
   for (let index = 0; index < mesLabels.length; index++) {
     const elementLabel = mesLabels[index];
     const elementCheckbox = mesCheckbox[index];
@@ -65,10 +67,8 @@ function AjouterTache(){
   const btnDelete = document.createElement("button") as HTMLButtonElement;
   btnDelete.innerText = "Remove";
   btnDelete.addEventListener("click", () => {
-    checkboxTache.remove();
-    labelTache.remove();
-    btnDelete.remove();
     divContainerTacheSaved.remove();
+    listerTaches();
   });
 
   const checkboxTache = document.createElement("input") as HTMLInputElement;
@@ -83,6 +83,7 @@ function AjouterTache(){
     else{
       labelTache.classList.remove("checkboxTache");
     }
+    listerTaches();
   });
   
 
