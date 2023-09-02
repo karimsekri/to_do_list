@@ -66,6 +66,7 @@ function AjouterTache(){
   
   const btnDelete = document.createElement("button") as HTMLButtonElement;
   btnDelete.innerText = "Remove";
+  btnDelete.classList.add("btnRemove");
   btnDelete.addEventListener("click", () => {
     divContainerTacheSaved.remove();
     listerTaches();
@@ -131,11 +132,19 @@ function recreerHistorique (elementLabelText: string, elementCheckboxChgecked : 
     checkboxTache.classList.add("checkbox");
     checkboxTache.setAttribute("type", "checkbox");
     checkboxTache.checked = elementCheckboxChgecked;
-   // checkboxTache.setAttribute("checked", elementCheckboxChgecked) ;
 
+    const btnDeleteTache = document.createElement("button") as HTMLButtonElement;
+    btnDeleteTache.classList.add("btnRemove");
+    btnDeleteTache.innerText= "Remove";
+   
+    btnDeleteTache.addEventListener("click", () => {
+      divContainerTacheSaved.remove();
+      listerTaches();
+    });
     
     divContainerTacheSaved.appendChild(checkboxTache);
-    divContainerTacheSaved.appendChild(labelTache);        
+    divContainerTacheSaved.appendChild(labelTache); 
+    divContainerTacheSaved.appendChild(btnDeleteTache);       
     divListTaches.appendChild(divContainerTacheSaved);
   
   
