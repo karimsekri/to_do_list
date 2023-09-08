@@ -46,13 +46,13 @@ btnAjouterTache.innerText = "Ajouter Tache";
 
 app.appendChild(divListTaches);
 
+onPageLoad();
 
 btnAjouterTache.addEventListener("click", () => {
   AjouterTache();  
   listerTaches();
+
 });
-
-
 
 
 function AjouterTache(){
@@ -149,3 +149,17 @@ function recreerHistorique (elementLabelText: string, elementCheckboxChgecked : 
   
   
 }
+
+
+async function onPageLoad(){
+  const res = await fetch("http://localhost:3030/maTacheFindAll")
+  const messages  = await res.text()
+  const messagesArray : string[] = JSON.parse(messages)
+  messagesArray.forEach((item ) => { 
+    recreerHistorique(item.tacheName, item.tacheIsChecked)   
+    
+  });
+  
+}
+
+
