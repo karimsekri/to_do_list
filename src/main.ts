@@ -3,22 +3,6 @@ const divListTaches = document.createElement("div") as HTMLDivElement;
 
 
 
-let mesLabelsStored = localStorage.getItem("labels");
-let mesCheckboxStored = localStorage.getItem("checkboxes");
-
-if (mesLabelsStored !== null && mesCheckboxStored != null) {
-  const mesLabels: string[] = JSON.parse(mesLabelsStored);
-  const mesCheckbox : boolean [] = JSON.parse(mesCheckboxStored);
-  
-  
-  for (let index = 0; index < mesLabels.length; index++) {
-    const elementLabel = mesLabels[index];
-    const elementCheckbox = mesCheckbox[index];
-    recreerHistorique(elementLabel, elementCheckbox);
-  }
-}
-
-
 const divAjoutTache = document.createElement("div") as HTMLDivElement;
 const inputTache = document.createElement("input") as HTMLInputElement;
 inputTache.setAttribute("id", "input");
@@ -27,9 +11,6 @@ inputTache.value = "texte ici";
 
 const btnAjouterTache = document.createElement("button") as HTMLButtonElement;
 
-
-
-
 divAjoutTache.appendChild(inputTache);
 divAjoutTache.appendChild(btnAjouterTache);
 app.appendChild(divAjoutTache);
@@ -37,44 +18,70 @@ app.appendChild(divAjoutTache);
 divAjoutTache.style.border = "1px";
 divAjoutTache.style.borderStyle = "solid";
 divAjoutTache.style.borderColor = "red";
-
 divListTaches.style.border = "1px";
 divListTaches.style.borderStyle = "solid";
 divListTaches.style.borderColor = "black";
-
 btnAjouterTache.innerText = "Ajouter Tache";
 
-app.appendChild(divListTaches);
+const btnDeleteTache = document.createElement("button") as HTMLButtonElement;
+const divContainerTacheSaved = document.createElement("div") as HTMLDivElement;
+divContainerTacheSaved.classList.add("tacheToSave");    
 
+
+const labelTache = document.createElement("label") as HTMLLabelElement;
+labelTache.classList.add("tacheValue");
+
+
+const checkboxTache = document.createElement("input") as HTMLInputElement;
+checkboxTache.classList.add("checkbox");
+checkboxTache.setAttribute("type", "checkbox");
+
+
+
+btnDeleteTache.classList.add("btnRemove");
+btnDeleteTache.innerText= "Remove"; 
+
+
+//Récuperer la liste des taches et les afficher
 onPageLoad();
 
-btnAjouterTache.addEventListener("click", () => {
-  AjouterTache();  
-  listerTaches();
 
+btnAjouterTache.addEventListener("click", () => {
+  createRowTache(inputTache.value);
+  onPageLoad();
+});
+
+btnDeleteTache.addEventListener("click", () => {
+    let divContainerTacheSavedId =  divContainerTacheSaved.getAttribute("id")
+  if (divContainerTacheSavedId !== null) {
+    deleteRowTache(divContainerTacheSavedId);
+    onPageLoad();
+  }
+    
 });
 
 
-function AjouterTache(){
-  const divContainerTacheSaved = document.createElement("div") as HTMLDivElement;
-  divContainerTacheSaved.classList.add("tacheToSave");
+function recreerHistorique (elementLabelText: string, elementCheckboxChecked : boolean ){
+  divContainerTacheSaved.setAttribute("id", elementLabelText );
+  labelTache.innerText = elementLabelText;
+  checkboxTache.checked = elementCheckboxChecked;
   
+  divContainerTacheSaved.appendChild(checkboxTache);
+  divContainerTacheSaved.appendChild(labelTache); 
+  divContainerTacheSaved.appendChild(btnDeleteTache); 
 
-  const labelTache = document.createElement("label") as HTMLLabelElement;
-  labelTache.classList.add("tacheValue");
-  labelTache.innerText = inputTache.value;
+  let dernierdivContainerTacheSaved = divListTaches.lastChild; 
+  console.log(divContainerTacheSaved);
+  if (dernierdivContainerTacheSaved != null) {    
+    divListTaches.insertBefore(divContainerTacheSaved, dernierdivContainerTacheSaved.nextSibling);
+  }
+  else{
+    divListTaches.appendChild(divContainerTacheSaved);
+  }
   
-  const btnDelete = document.createElement("button") as HTMLButtonElement;
-  btnDelete.innerText = "Remove";
-  btnDelete.classList.add("btnRemove");
-  btnDelete.addEventListener("click", () => {
-    divContainerTacheSaved.remove();
-    listerTaches();
-  });
+  app.appendChild(divListTaches);
 
-  const checkboxTache = document.createElement("input") as HTMLInputElement;
-  checkboxTache.classList.add("checkbox");
-  checkboxTache.setAttribute("type", "checkbox");
+  
 
   checkboxTache.addEventListener("change", () => {
     if (checkboxTache.checked) {
@@ -84,82 +91,37 @@ function AjouterTache(){
     else{
       labelTache.classList.remove("checkboxTache");
     }
-    listerTaches();
-  });
-  
-
-  divContainerTacheSaved.appendChild(checkboxTache);
-  divContainerTacheSaved.appendChild(labelTache);
-  divContainerTacheSaved.appendChild(btnDelete);
-  divListTaches.appendChild(divContainerTacheSaved);
-  
-
- 
-}
-
-function listerTaches() {
-  const listDesTaches = document.querySelectorAll(".tacheValue"); 
-  const listTachesArray = Array.from(listDesTaches) as HTMLLabelElement[];
-  const listDesCheckbox = document.querySelectorAll(".checkbox"); 
-  const listCheckboxArray = Array.from(listDesCheckbox) as HTMLInputElement[];
-   
-  let tabTaches: string[] = []
-  let tabChecked: boolean[] = []
-  for (let index = 0; index < listTachesArray.length; index++) {
-    const nomTache = listTachesArray[index].innerText;
-    const muChecked = listCheckboxArray[index].checked
-        
-    tabTaches.push(nomTache);
-    tabChecked.push(muChecked);
-  }
-
-  localStorage.setItem('labels', JSON.stringify(tabTaches));
-  localStorage.setItem('checkboxes', JSON.stringify(tabChecked));
-  
-}
-
-
-function recreerHistorique (elementLabelText: string, elementCheckboxChgecked : boolean ){
-   
-    const divContainerTacheSaved = document.createElement("div") as HTMLDivElement;
-    divContainerTacheSaved.classList.add("tacheToSave");    
-  
-    const labelTache = document.createElement("label") as HTMLLabelElement;
-    labelTache.classList.add("tacheValue");
-    labelTache.innerText = elementLabelText;
-
-    const checkboxTache = document.createElement("input") as HTMLInputElement;
-    checkboxTache.classList.add("checkbox");
-    checkboxTache.setAttribute("type", "checkbox");
-    checkboxTache.checked = elementCheckboxChgecked;
-
-    const btnDeleteTache = document.createElement("button") as HTMLButtonElement;
-    btnDeleteTache.classList.add("btnRemove");
-    btnDeleteTache.innerText= "Remove";
-   
-    btnDeleteTache.addEventListener("click", () => {
-      divContainerTacheSaved.remove();
-      listerTaches();
-    });
     
-    divContainerTacheSaved.appendChild(checkboxTache);
-    divContainerTacheSaved.appendChild(labelTache); 
-    divContainerTacheSaved.appendChild(btnDeleteTache);       
-    divListTaches.appendChild(divContainerTacheSaved);
-  
-  
+  });
 }
-
 
 async function onPageLoad(){
   const res = await fetch("http://localhost:3030/maTacheFindAll")
-  const messages  = await res.text()
-  const messagesArray : string[] = JSON.parse(messages)
-  messagesArray.forEach((item ) => { 
-    recreerHistorique(item.tacheName, item.tacheIsChecked)   
-    
+  const messages  = await res.text()  
+  const messagesArray : string[] = JSON.parse(messages)  
+  messagesArray.forEach((item ) => {    
+    recreerHistorique(item.tacheName, item.tacheIsChecked)     
   });
-  
+}
+async function createRowTache(inputTacheParam: string){
+  const res = await fetch("http://localhost:3030/maTacheCreate/"+inputTacheParam)
+  const messages  = await res.text()
+  console.log(messages)  
+      
 }
 
+async function deleteRowTache(idTacheParam: string){
+  const res = await fetch("http://localhost:3030/maTacheDelete/"+idTacheParam,{
+    method:'DELETE'
+  })
+  const messages  = await res.text()
+  console.log(messages)  
+      
+}
 
+async function upDateRowTache(inputTacheParam: string){
+  const res = await fetch("http://localhost:3030/upDateRowTache/"+inputTacheParam)
+  const messages  = await res.text()
+  console.log(messages)  
+      
+}
